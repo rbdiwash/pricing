@@ -54,7 +54,7 @@ const initialState: PricingProfileState = {
     basedOn: "globalWholesalePrice",
     mode: "fixed",
     incrementMode: "decrease",
-    adjustmentValue: 5.0,
+    adjustmentValue: 0,
   },
 };
 

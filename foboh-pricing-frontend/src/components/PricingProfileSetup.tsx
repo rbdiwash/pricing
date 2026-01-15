@@ -13,6 +13,7 @@ import { BasicPricingProfileSection } from "./pricing-profile/BasicPricingProfil
 import { ProductPricingSection } from "./pricing-profile/ProductPricingSection";
 import { AssignCustomersSection } from "./pricing-profile/AssignCustomersSection";
 import { NavigationFooter } from "./pricing-profile/NavigationFooter";
+import { toast } from "react-toastify";
 
 export function PricingProfileSetup() {
   const {
@@ -44,7 +45,7 @@ export function PricingProfileSetup() {
     usePricingProfiles();
   const createProfile = useCreatePricingProfile();
 
-  const [profileName, setProfileName] = useState("Heaps Normal #4");
+  const [profileName, setProfileName] = useState("Profile Name");
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
@@ -169,12 +170,11 @@ export function PricingProfileSetup() {
           status: "draft",
         };
 
-        await createProfile.mutateAsync(profileData);
         setCurrentStep(2);
-        setSaveMessage("Profile saved! Proceeding to customer assignment...");
+        toast.success("Profile saved! Proceeding to customer assignment...");
         setTimeout(() => setSaveMessage(""), 3000);
       } catch (error) {
-        setSaveMessage("Failed to save profile. Please try again.");
+        toast.error("Failed to save profile. Please try again.");
         setTimeout(() => setSaveMessage(""), 3000);
       } finally {
         setIsSaving(false);
@@ -227,7 +227,7 @@ export function PricingProfileSetup() {
           </button>
           <button
             onClick={handleSaveDraft}
-            disabled={isSaving}
+            disabled={true}
             className="px-5 py-2.5 bg-primary border border-primary rounded-md text-white text-sm font-medium cursor-pointer transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSaving ? "Saving..." : "Save as Draft"}
@@ -322,7 +322,9 @@ export function PricingProfileSetup() {
           />
         )}
 
-        <AssignCustomersSection currentStep={currentStep} />
+        {currentStep < 2 && (
+          <AssignCustomersSection currentStep={currentStep} />
+        )}
 
         {currentStep >= 2 && (
           <NavigationFooter

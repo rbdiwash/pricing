@@ -50,7 +50,7 @@ export function PricingTable({
               <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                 Adjustment
               </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[130px]">
                 New Price
               </th>
             </tr>
@@ -65,7 +65,9 @@ export function PricingTable({
               const adjustmentDisplay =
                 priceAdjustment.mode === "fixed"
                   ? `${adjustmentSign}$${Math.abs(adjustment).toFixed(2)}`
-                  : `${adjustmentSign}${Math.abs((adjustment / basePrice) * 100).toFixed(2)}%`;
+                  : `${adjustmentSign}${Math.abs(
+                      (adjustment / basePrice) * 100
+                    ).toFixed(2)}%`;
 
               return (
                 <tr key={product.id}>

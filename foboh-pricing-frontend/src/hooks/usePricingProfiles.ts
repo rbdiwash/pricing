@@ -67,6 +67,7 @@ export function useCreatePricingProfile() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pricing-profiles"] });
       toast.success("Pricing profile created successfully");
+      window.location.replace("/");
     },
   });
 }

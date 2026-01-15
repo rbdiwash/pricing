@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import type { PricingProfile } from "../../hooks/usePricingProfiles";
 
 interface PriceAdjustmentControlsProps {
@@ -60,7 +61,9 @@ export function PriceAdjustmentControls({
                 name="adjustmentMode"
                 value="fixed"
                 checked={mode === "fixed"}
-                onChange={(e) => onModeChange(e.target.value as "fixed" | "dynamic")}
+                onChange={(e) =>
+                  onModeChange(e.target.value as "fixed" | "dynamic")
+                }
                 className="w-4 h-4 cursor-pointer accent-primary"
               />
               <span>Fixed ($)</span>
@@ -71,7 +74,9 @@ export function PriceAdjustmentControls({
                 name="adjustmentMode"
                 value="dynamic"
                 checked={mode === "dynamic"}
-                onChange={(e) => onModeChange(e.target.value as "fixed" | "dynamic")}
+                onChange={(e) =>
+                  onModeChange(e.target.value as "fixed" | "dynamic")
+                }
                 className="w-4 h-4 cursor-pointer accent-primary"
               />
               <span>Dynamic (%)</span>
@@ -91,7 +96,9 @@ export function PriceAdjustmentControls({
                 value="increase"
                 checked={incrementMode === "increase"}
                 onChange={(e) =>
-                  onIncrementModeChange(e.target.value as "increase" | "decrease")
+                  onIncrementModeChange(
+                    e.target.value as "increase" | "decrease"
+                  )
                 }
                 className="w-4 h-4 cursor-pointer accent-primary"
               />
@@ -104,7 +111,9 @@ export function PriceAdjustmentControls({
                 value="decrease"
                 checked={incrementMode === "decrease"}
                 onChange={(e) =>
-                  onIncrementModeChange(e.target.value as "increase" | "decrease")
+                  onIncrementModeChange(
+                    e.target.value as "increase" | "decrease"
+                  )
                 }
                 className="w-4 h-4 cursor-pointer accent-primary"
               />
@@ -121,15 +130,18 @@ export function PriceAdjustmentControls({
         <input
           type="number"
           step="0.01"
-          min="0"
           value={adjustmentValue}
-          onChange={(e) => onAdjustmentValueChange(parseFloat(e.target.value) || 0)}
+          onChange={(e) =>
+            onAdjustmentValueChange(parseFloat(e.target.value) || 0)
+          }
           className="px-3 py-2.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-primary w-full max-w-xs"
         />
+        <span>{}</span>
       </div>
 
       <p className="text-sm text-gray-600 mb-6">
-        The adjusted price will be calculated from Based on Price selected above.
+        The adjusted price will be calculated from Based on Price selected
+        above.
       </p>
     </div>
   );

@@ -39,7 +39,10 @@ export function BasicPricingProfileSection({
           This profile will be marked as Default and expires in 16 Days{" "}
           {new Date().toLocaleDateString()}.
         </p>
-        <button className="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-800 text-sm cursor-pointer inline-flex items-center gap-2 transition-all hover:bg-gray-50 hover:border-gray-400">
+        <button
+          disabled={true}
+          className="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-800 text-sm cursor-pointer inline-flex items-center gap-2 transition-all hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <span>✏️</span> Make Changes
         </button>
       </div>
