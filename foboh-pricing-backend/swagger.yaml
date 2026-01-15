@@ -1,0 +1,544 @@
+openapi: 3.0.0
+info:
+  title: Foboh Pricing API
+  version: 1.0.0
+  description: |
+    API for managing product pricing and pricing profiles.
+    This API provides endpoints for retrieving products and managing pricing profiles
+    with various filtering and configuration options.
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local development server (Version 1)
+paths:
+  /products:
+    get:
+      summary: Get products
+      description: |
+        Retrieve a list of products with optional filtering and search capabilities.
+        Supports filtering by category, sub-category, brand, and segment, as well as
+        text search across product title, SKU code, and brand.
+      operationId: getProducts
+      tags:
+        - Products
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: |
+            Search term to filter products by title, SKU code, or brand (case-insensitive).
+            Example: "wine" or "HGVPIN"
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Filter products by category. Example: "Alcoholic Beverage"
+        - name: subCategory
+          in: query
+          schema:
+            type: string
+          description: Filter products by sub-category. Example: "Wine"
+        - name: brand
+          in: query
+          schema:
+            type: string
+          description: Filter products by brand. Example: "High Garden"
+        - name: segment
+          in: query
+          schema:
+            type: string
+          description: Filter products by segment. Example: "Red", "White", "Sparkling"
+      responses:
+        '200':
+          description: Successful response - Returns an array of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+              examples:
+                example1:
+                  summary: Sample product list
+                  value:
+                    - id: "1"
+                      title: "High Garden Pinot Noir 2021"
+                      skuCode: "HGVPIN216"
+                      brand: "High Garden"
+                      category: "Alcoholic Beverage"
+                      subCategory: "Wine"
+                      segment: "Red"
+                      globalWholesalePrice: 279.06
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /pricing-profiles:
+    get:
+      summary: Get all pricing profiles
+      description: |
+        Retrieve all pricing profiles. Returns a list of all available pricing profiles
+        including their configuration and status.
+      operationId: getAllPricingProfiles
+      tags:
+        - Pricing Profiles
+      responses:
+        '200':
+          description: Successful response - Returns an array of pricing profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PricingProfile'
+              examples:
+                example1:
+                  summary: Sample pricing profiles list
+                  value:
+                    - id: "1"
+                      name: "Global Wholesale Price"
+                      type: "global"
+                      createdAt: "2024-01-01T00:00:00.000Z"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Create a new pricing profile
+      description: |
+        Create a new pricing profile with specified configuration including profile type,
+        selected products, and price adjustment settings.
+      operationId: createPricingProfile
+      tags:
+        - Pricing Profiles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePricingProfileRequest'
+            examples:
+              example1:
+                summary: Create a pricing profile for single product
+                value:
+                  name: "Summer Sale Profile"
+                  profileType: "one"
+                  selectedProducts: ["1"]
+                  priceAdjustment:
+                    basedOn: "global"
+                    mode: "fixed"
+                    increment: "increase"
+                    value: 10.0
+              example2:
+                summary: Create a pricing profile for multiple products
+                value:
+                  name: "Bulk Discount Profile"
+                  profileType: "multiple"
+                  selectedProducts: ["1", "2", "3"]
+                  priceAdjustment:
+                    basedOn: "1"
+                    mode: "dynamic"
+                    increment: "decrease"
+                    value: 15.0
+      responses:
+        '201':
+          description: Pricing profile created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingProfile'
+              examples:
+                example1:
+                  summary: Created pricing profile
+                  value:
+                    id: "2"
+                    name: "Summer Sale Profile"
+                    profileType: "one"
+                    selectedProducts: ["1"]
+                    priceAdjustment:
+                      basedOn: "global"
+                      mode: "fixed"
+                      increment: "increase"
+                      value: 10.0
+                    createdAt: "2024-01-15T10:30:00.000Z"
+                    status: "draft"
+        '400':
+          description: Bad request - Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  summary: Missing required field
+                  value:
+                    error: "Profile name is required"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /pricing-profiles/{id}:
+    get:
+      summary: Get a pricing profile by ID
+      description: Retrieve a specific pricing profile by its unique identifier.
+      operationId: getPricingProfileById
+      tags:
+        - Pricing Profiles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the pricing profile
+          example: "1"
+      responses:
+        '200':
+          description: Successful response - Returns the pricing profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingProfile'
+              examples:
+                example1:
+                  summary: Pricing profile details
+                  value:
+                    id: "1"
+                    name: "Global Wholesale Price"
+                    type: "global"
+                    createdAt: "2024-01-01T00:00:00.000Z"
+        '404':
+          description: Pricing profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  summary: Profile not found
+                  value:
+                    error: "Pricing profile not found"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update a pricing profile
+      description: |
+        Update an existing pricing profile. All provided fields will be updated.
+        Partial updates are supported - only include the fields you want to change.
+      operationId: updatePricingProfile
+      tags:
+        - Pricing Profiles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the pricing profile to update
+          example: "1"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePricingProfileRequest'
+            examples:
+              example1:
+                summary: Update profile name and status
+                value:
+                  name: "Updated Profile Name"
+                  status: "published"
+              example2:
+                summary: Update price adjustment settings
+                value:
+                  priceAdjustment:
+                    mode: "dynamic"
+                    increment: "decrease"
+                    value: 20.0
+      responses:
+        '200':
+          description: Pricing profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingProfile'
+              examples:
+                example1:
+                  summary: Updated pricing profile
+                  value:
+                    id: "1"
+                    name: "Updated Profile Name"
+                    profileType: "one"
+                    selectedProducts: ["1"]
+                    priceAdjustment:
+                      basedOn: "global"
+                      mode: "dynamic"
+                      increment: "decrease"
+                      value: 20.0
+                    createdAt: "2024-01-01T00:00:00.000Z"
+                    updatedAt: "2024-01-15T12:00:00.000Z"
+                    status: "published"
+        '404':
+          description: Pricing profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  summary: Profile not found
+                  value:
+                    error: "Pricing profile not found"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Delete a pricing profile
+      description: |
+        Delete a pricing profile by its unique identifier. This action is permanent
+        and cannot be undone.
+      operationId: deletePricingProfile
+      tags:
+        - Pricing Profiles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the pricing profile to delete
+          example: "1"
+      responses:
+        '204':
+          description: Pricing profile deleted successfully (no content)
+        '404':
+          description: Pricing profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  summary: Profile not found
+                  value:
+                    error: "Pricing profile not found"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - id
+        - title
+        - skuCode
+        - brand
+        - category
+        - subCategory
+        - segment
+        - globalWholesalePrice
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the product
+          example: "1"
+        title:
+          type: string
+          description: Product name/title
+          example: "High Garden Pinot Noir 2021"
+        skuCode:
+          type: string
+          description: Stock Keeping Unit code
+          example: "HGVPIN216"
+        brand:
+          type: string
+          description: Product brand name
+          example: "High Garden"
+        category:
+          type: string
+          description: Product category
+          example: "Alcoholic Beverage"
+        subCategory:
+          type: string
+          description: Product sub-category
+          example: "Wine"
+        segment:
+          type: string
+          description: Product segment
+          example: "Red"
+        globalWholesalePrice:
+          type: number
+          format: float
+          description: Global wholesale price in dollars
+          example: 279.06
+
+    PricingProfile:
+      type: object
+      required:
+        - id
+        - name
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the pricing profile
+          example: "1"
+        name:
+          type: string
+          description: Name of the pricing profile
+          example: "Summer Sale Profile"
+        type:
+          type: string
+          description: Type of pricing profile (for system profiles like "global")
+          enum:
+            - global
+          example: "global"
+        profileType:
+          type: string
+          description: Profile selection type
+          enum:
+            - one
+            - multiple
+            - all
+          example: "multiple"
+        selectedProducts:
+          type: array
+          items:
+            type: string
+          description: Array of product IDs selected for this pricing profile
+          example: ["1", "2", "3"]
+        priceAdjustment:
+          $ref: '#/components/schemas/PriceAdjustment'
+        status:
+          type: string
+          description: Status of the pricing profile
+          enum:
+            - draft
+            - published
+          example: "draft"
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the profile was created
+          example: "2024-01-01T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the profile was last updated
+          example: "2024-01-15T12:00:00.000Z"
+
+    PriceAdjustment:
+      type: object
+      properties:
+        basedOn:
+          type: string
+          description: |
+            Base pricing reference. Can be "global" for global wholesale price
+            or a pricing profile ID to base adjustments on another profile.
+          example: "global"
+        mode:
+          type: string
+          description: Adjustment calculation mode
+          enum:
+            - fixed
+            - dynamic
+          example: "fixed"
+        increment:
+          type: string
+          description: Adjustment direction
+          enum:
+            - increase
+            - decrease
+          example: "increase"
+        value:
+          type: number
+          format: float
+          description: |
+            Adjustment value. For "fixed" mode, this is a dollar amount.
+            For "dynamic" mode, this is a percentage (e.g., 15 for 15%).
+          example: 10.0
+
+    CreatePricingProfileRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Name of the pricing profile (required)
+          example: "Summer Sale Profile"
+        profileType:
+          type: string
+          enum:
+            - one
+            - multiple
+            - all
+          description: Profile selection type
+          example: "multiple"
+        selectedProducts:
+          type: array
+          items:
+            type: string
+          description: Array of product IDs to include in the profile
+          example: ["1", "2", "3"]
+        priceAdjustment:
+          $ref: '#/components/schemas/PriceAdjustment'
+          description: Price adjustment configuration
+
+    UpdatePricingProfileRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Updated name of the pricing profile
+          example: "Updated Profile Name"
+        profileType:
+          type: string
+          enum:
+            - one
+            - multiple
+            - all
+          description: Updated profile selection type
+          example: "multiple"
+        selectedProducts:
+          type: array
+          items:
+            type: string
+          description: Updated array of product IDs
+          example: ["1", "2"]
+        priceAdjustment:
+          $ref: '#/components/schemas/PriceAdjustment'
+          description: Updated price adjustment configuration
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+          description: Updated status of the pricing profile
+          example: "published"
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message describing what went wrong
+          example: "Pricing profile not found"
+
+  responses:
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            example1:
+              summary: Server error
+              value:
+                error: "Internal server error"
+
+  tags:
+    - name: Products
+      description: Operations related to product management and retrieval
+    - name: Pricing Profiles
+      description: Operations related to pricing profile management (CRUD operations)
