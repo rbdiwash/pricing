@@ -323,6 +323,171 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /pricing-profiles/{id}/calculate-prices:
+    post:
+      summary: Calculate adjusted prices for products
+      description: |
+        Calculate adjusted prices for one or more products based on a pricing profile's
+        configuration. Supports "basedOn" references to global wholesale price or other
+        pricing profiles (with recursive calculation support).
+      operationId: calculatePricesForProducts
+      tags:
+        - Pricing Profiles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the pricing profile to use for calculation
+          example: "2"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of product IDs to calculate prices for. If omitted, calculates for all products.
+                  example: ["1", "2", "3"]
+      responses:
+        '200':
+          description: Successful calculation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profileId:
+                    type: string
+                    example: "2"
+                  profileName:
+                    type: string
+                    example: "Summer Sale Profile"
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        skuCode:
+                          type: string
+                        globalWholesalePrice:
+                          type: number
+                        basePrice:
+                          type: number
+                          description: The base price used for calculation (may differ from globalWholesalePrice if based on another profile)
+                        adjustedPrice:
+                          type: number
+                          description: The final calculated adjusted price
+              examples:
+                example1:
+                  summary: Calculated prices for multiple products
+                  value:
+                    profileId: "2"
+                    profileName: "Summer Sale Profile"
+                    products:
+                      - id: "1"
+                        title: "High Garden Pinot Noir 2021"
+                        skuCode: "HGVPIN216"
+                        globalWholesalePrice: 279.06
+                        basePrice: 279.06
+                        adjustedPrice: 289.06
+        '404':
+          description: Pricing profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /pricing-profiles/{id}/calculate-price/{productId}:
+    post:
+      summary: Calculate adjusted price for a single product
+      description: |
+        Calculate the adjusted price for a single product based on a pricing profile's
+        configuration. This endpoint is useful for getting a quick price calculation
+        for one product.
+      operationId: calculatePriceForProduct
+      tags:
+        - Pricing Profiles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the pricing profile
+          example: "2"
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the product
+          example: "1"
+      responses:
+        '200':
+          description: Successful calculation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  productId:
+                    type: string
+                    example: "1"
+                  productTitle:
+                    type: string
+                    example: "High Garden Pinot Noir 2021"
+                  globalWholesalePrice:
+                    type: number
+                    example: 279.06
+                  adjustedPrice:
+                    type: number
+                    example: 289.06
+                  profileId:
+                    type: string
+                    example: "2"
+                  profileName:
+                    type: string
+                    example: "Summer Sale Profile"
+              examples:
+                example1:
+                  summary: Calculated price for a product
+                  value:
+                    productId: "1"
+                    productTitle: "High Garden Pinot Noir 2021"
+                    globalWholesalePrice: 279.06
+                    adjustedPrice: 289.06
+                    profileId: "2"
+                    profileName: "Summer Sale Profile"
+        '404':
+          description: Pricing profile or product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example1:
+                  summary: Profile not found
+                  value:
+                    error: "Pricing profile not found"
+                example2:
+                  summary: Product not found
+                  value:
+                    error: "Product not found"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   schemas:
     Product:
