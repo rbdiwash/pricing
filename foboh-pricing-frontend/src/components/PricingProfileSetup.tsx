@@ -74,9 +74,9 @@ export function PricingProfileSetup() {
   const uniqueValues = useMemo(() => {
     return {
       categories: Array.from(new Set(products.map((p) => p.category))),
-      subCategories: subCategories,
-      segments: segments,
-      brands: brands,
+      subCategories: [...subCategories],
+      segments: [...segments],
+      brands: [...brands],
     };
   }, [products]);
 
@@ -169,14 +169,6 @@ export function PricingProfileSetup() {
 
       setIsSaving(true);
       try {
-        const profileData = {
-          name: profileName,
-          profileType: state.profileType,
-          selectedProducts: Array.from(state.selectedProducts),
-          priceAdjustment: state.priceAdjustment,
-          status: "draft",
-        };
-
         setCurrentStep(2);
         toast.success("Profile saved! Proceeding to customer assignment...");
         setTimeout(() => setSaveMessage(""), 3000);
