@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Product, ProductFilters } from "../types/product";
 
-const API_BASE_URL = "http://localhost:3000/api/v1";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
 
 async function fetchProducts(filters: ProductFilters = {}): Promise<Product[]> {
   const queryParams = new URLSearchParams();
