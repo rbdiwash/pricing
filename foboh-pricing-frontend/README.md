@@ -1,55 +1,176 @@
 # Foboh Pricing Frontend
 
-A modern React-based frontend application for managing pricing profiles, product selection, and customer assignments. Built with TypeScript, React Query, and Tailwind CSS for optimal performance and maintainability.
+A modern, production-ready React frontend application for managing pricing profiles, product selection, and customer assignments. Built with TypeScript, React Query, and Tailwind CSS to deliver optimal performance, maintainability, and user experience.
 
-## 🚀 Features
+---
+
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Architecture](#architecture)
+- [State Management](#state-management)
+- [Component Structure](#component-structure)
+- [Key Features & Implementation](#key-features--implementation)
+- [API Integration](#api-integration)
+- [Styling & Theming](#styling--theming)
+- [Development Guidelines](#development-guidelines)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## Overview
+
+The Foboh Pricing Frontend is a single-page application designed to streamline the management of pricing profiles. It provides an intuitive, multi-step workflow for selecting products, configuring price adjustments, and assigning customers to pricing profiles.
+
+### Design Philosophy
+
+The application follows modern React best practices with a focus on:
+
+- **Performance**: Optimized rendering with React Query caching and memoization
+- **Type Safety**: Full TypeScript coverage for compile-time error prevention
+- **Maintainability**: Modular component architecture with clear separation of concerns
+- **User Experience**: Responsive design with real-time feedback and smooth interactions
+- **Scalability**: Extensible architecture that can accommodate future requirements
+
+---
+
+## Features
 
 ### Core Functionality
 
-- **Pricing Profile Management**: Create and manage pricing profiles with custom configurations
-- **Product Selection**: Select products using three modes:
-  - Single product selection
-  - Multiple product selection
-  - All products selection
-- **Advanced Search & Filtering**:
-  - Search by product name, SKU, or brand
-  - Filter by category, sub-category, segment, and brand
-  - Real-time search with debouncing
-- **Price Adjustment Controls**:
-  - Adjust prices based on Global Wholesale Price or other pricing profiles
-  - Fixed ($) or Dynamic (%) adjustment modes
-  - Increase or decrease price adjustments
-  - Real-time price calculations
-- **Pricing Table**: View calculated prices with adjustment details
-- **Multi-Step Workflow**: Guided setup process with step-by-step navigation
-- **Save & Publish**: Save profiles as drafts or publish them directly
+#### 1. Pricing Profile Management
 
-### User Experience
+Create and manage pricing profiles with configuration options:
 
-- ✨ Modern, responsive UI built with Tailwind CSS
-- 🎯 Intuitive step-by-step workflow
-- ⚡ Fast performance with React Query caching
-- 📱 Mobile-responsive design
-- 🔄 Real-time updates and calculations
+- Custom profile naming
+- Multiple profile types (Single, Multiple, All Products)
+- Profile-based pricing references
 
-## 🛠️ Tech Stack
+#### 2. Product Selection System
 
-- **Framework**: React 19.2.0
-- **Language**: TypeScript 5.9.3
-- **Build Tool**: Vite 7.2.4
-- **State Management**:
-  - React Context API (Global state)
-  - React Query / TanStack Query (Server state)
-- **Styling**: Tailwind CSS 3.4.1
-- **HTTP Client**: Fetch API (with React Query)
+Three distinct selection modes with state management:
 
-## 📋 Prerequisites
+- **One Product Mode**: Enforces single product selection with automatic deselection
+- **Multiple Products Mode**: Standard multi-select with checkbox controls
+- **All Products Mode**: Auto-selects all available products and prevents manual changes
 
-- Node.js (v18 or higher recommended)
-- npm or yarn package manager
-- Backend API running on `http://localhost:3000` (see backend README)
+#### 3. Search & Filtering Capabilities
 
-## 🔧 Installation
+**Current Implementation:**
+
+The search and filtering system provides:
+
+- **Text Search**: Real-time search across product title, SKU code, and brand names
+
+  - Debounced input (500ms delay) to minimize API calls
+  - Case-insensitive matching
+  - Server-side filtering support
+
+- **Multi-Filter System**:
+
+  - Category filtering
+  - Sub-category filtering
+  - Brand filtering
+  - Segment filtering
+  - Filters are combinable and work together seamlessly
+
+- **Filter State Management**:
+  - Filters persist during navigation
+  - Clear filters functionality
+  - URL-safe filter handling (prepared for future URL state sync)
+
+**Design Considerations:**
+
+Advanced search features like fuzzy matching, wildcard search, and query parsing (e.g., `brand:koyama`) were considered but intentionally left out to keep the scope aligned with the initial development timeline. The current architecture allows these features to be added easily through:
+
+- Extending the `ProductFilters` interface in `types/product.ts`
+- Updating the query parameter construction in `hooks/useProducts.ts`
+- Enhancing the search input component with query parsing logic
+
+#### 4. Price Adjustment System
+
+Sophisticated price calculation engine:
+
+- **Base Price Selection**:
+  - Global Wholesale Price (default)
+  - Other pricing profiles (dynamic dropdown, not implemented now)
+- **Adjustment Modes**:
+  - **Fixed ($)**: Absolute dollar amount adjustments
+  - **Dynamic (%)**: Percentage-based adjustments
+- **Increment Control**:
+  - Increase mode: Adds to base price
+  - Decrease mode: Subtracts from base price
+- **Real-time Calculation**:
+  - Prices update instantly as adjustments change
+  - Negative price protection (minimum $0.00)
+  - Precise decimal handling (2 decimal places)
+
+#### 5. Pricing Table
+
+Interactive table displaying:
+
+- Product details (title, SKU, category)
+- Base prices
+- Applied adjustments
+- Calculated new prices
+- Real-time updates
+
+#### 6. Save & Publish System
+
+- **Save as Draft**: Preserve work without publishing but not implemented on this version.
+- **Auto-save Indicators**: Visual feedback during save operations(not implemented)
+- **Publish Workflow**: One-click publishing after validation
+- **Error Handling**: Error messages and retry logic
+
+### User Experience Enhancements
+
+- ✨ **Modern UI**: Clean, professional design with Tailwind CSS
+- 🎯 **Intuitive Navigation**: Clear step indicators and progress tracking
+- ⚡ **Performance Optimized**: React Query caching and smart re-rendering
+- 📱 **Responsive Design**: Mobile-first approach with breakpoint optimization
+- 🔄 **Real-time Updates**: Live calculations and instant feedback
+- 🎨 **Loading States**: Skeleton screens and loading indicators
+- ✅ **Form Validation**: Client-side validation with helpful error messages
+- 🔍 **Empty States**: Helpful messages when no products match filters
+
+---
+
+## Tech Stack
+
+### Core Technologies
+
+- **React 19.2.0**: Modern React with latest features and optimizations
+- **TypeScript 5.9.3**: Type-safe development with strict mode enabled
+- **Vite 7.2.4**: Lightning-fast build tool with HMR support
+
+### State Management
+
+- **React Context API**: Global application state management
+- **React Query (TanStack Query) 5.90.17**: Server state management
+
+### Styling
+
+- **Tailwind CSS 3.4.1**: Utility-first CSS framework
+
+### Additional Libraries
+
+- **React Toastify 11.0.5**: Toast notifications for user feedback
+- **Fetch API**: Native HTTP client (wrapped by React Query)
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js**: v18 or higher (v20+ recommended)
+- **npm**: v9 or higher (or yarn/pnpm)
+- **Backend API**: Running on `http://localhost:3000` (see backend README)
+
+### Installation
 
 1. **Clone the repository**
 
@@ -64,311 +185,34 @@ A modern React-based frontend application for managing pricing profiles, product
    npm install
    ```
 
-3. **Start the development server**
+3. **Configure environment variables**
+
+   Create a `.env` file in the root directory:
+
+   ```env
+   VITE_API_BASE_URL=http://localhost:3000/api/v1
+   ```
+
+   > **Note**: In Vite, environment variables must be prefixed with `VITE_` to be exposed to client-side code.
+
+4. **Start the development server**
 
    ```bash
    npm run dev
    ```
 
-4. **Open in browser**
+5. **Open in browser**
    ```
    http://localhost:5173
    ```
 
-## 📁 Project Structure
-
-```
-foboh-pricing-frontend/
-├── src/
-│   ├── components/          # React components
-│   │   ├── pricing-profile/ # Pricing profile specific components
-│   │   │   ├── AssignCustomersSection.tsx
-│   │   │   ├── BasicPricingProfileSection.tsx
-│   │   │   ├── NavigationFooter.tsx
-│   │   │   ├── PriceAdjustmentControls.tsx
-│   │   │   ├── PricingTable.tsx
-│   │   │   ├── ProductPricingForm.tsx
-│   │   │   ├── ProductPricingSection.tsx
-│   │   │   ├── ProductPricingSummary.tsx
-│   │   │   ├── ProfileTypeSelector.tsx
-│   │   │   └── SearchAndFilters.tsx
-│   │   ├── Header.tsx
-│   │   ├── PricingProfileSetup.tsx
-│   │   ├── ProductCard.tsx
-│   │   └── Sidebar.tsx
-│   ├── contexts/            # React Context providers
-│   │   └── PricingProfileContext.tsx
-│   ├── hooks/               # Custom React hooks
-│   │   ├── useDebounce.js
-│   │   ├── usePricingProfiles.ts
-│   │   └── useProducts.ts
-│   ├── types/               # TypeScript type definitions
-│   │   └── product.ts
-│   ├── utils/               # Utility functions
-│   │   └── priceCalculation.ts
-│   ├── consts/              # Constants
-│   │   └── const.js
-│   ├── App.tsx              # Main App component
-│   ├── main.tsx             # Application entry point
-│   └── index.css            # Global styles
-├── public/                  # Static assets
-├── package.json
-├── tsconfig.json            # TypeScript configuration
-├── vite.config.ts           # Vite configuration
-├── tailwind.config.js       # Tailwind CSS configuration
-└── postcss.config.js        # PostCSS configuration
-```
-
-## 🎯 Available Scripts
-
-### Development
-
-```bash
-npm run dev
-```
-
-Starts the development server with hot module replacement (HMR).
-
-### Build
-
-```bash
-npm run build
-```
-
-Creates an optimized production build in the `dist/` directory.
-
-### Preview
-
-```bash
-npm run preview
-```
-
-Previews the production build locally.
-
-### Lint
-
-```bash
-npm run lint
-```
-
-Runs ESLint to check code quality and consistency.
-
-## 🔌 API Integration
-
-The frontend communicates with the backend API at `http://localhost:3000/api/v1`.
-
-### Endpoints Used
-
-#### Products
-
-- `GET /api/v1/products` - Fetch products with optional filters
-  - Query parameters: `search`, `category`, `brand`, `segment`
-
-#### Pricing Profiles
-
-- `GET /api/v1/pricing-profiles` - Fetch all pricing profiles
-- `GET /api/v1/pricing-profiles/:id` - Fetch a single profile
-- `POST /api/v1/pricing-profiles` - Create a new pricing profile
-- `PUT /api/v1/pricing-profiles/:id` - Update a pricing profile
-- `DELETE /api/v1/pricing-profiles/:id` - Delete a pricing profile
-
-### Configuration
-
-API base URL is configured in:
-
-- `src/hooks/useProducts.ts`
-- `src/hooks/usePricingProfiles.ts`
-
-To change the API URL, update the `API_BASE_URL` constant in these files.
-
-## 🏗️ Architecture
-
-### State Management
-
-#### Global State (React Context)
-
-- **PricingProfileContext**: Manages pricing profile state including:
-  - Profile type selection
-  - Selected products
-  - Search queries and filters
-  - Price adjustment configurations
-
-#### Server State (React Query)
-
-- **useProducts**: Manages product data fetching and caching
-- **usePricingProfiles**: Manages pricing profile CRUD operations
-
-### Component Hierarchy
-
-```
-App
-└── PricingProfileSetup (Main Container)
-    ├── BasicPricingProfileSection
-    ├── ProductPricingSection
-    │   ├── ProductPricingSummary (Collapsed View)
-    │   └── ProductPricingForm (Full View)
-    │       ├── ProfileTypeSelector
-    │       ├── SearchAndFilters
-    │       ├── ProductCard (List)
-    │       ├── PriceAdjustmentControls
-    │       └── PricingTable
-    ├── AssignCustomersSection
-    └── NavigationFooter
-```
-
-### Key Components
-
-#### PricingProfileSetup
-
-Main container component that orchestrates the entire pricing profile setup workflow.
-
-#### ProductPricingSection
-
-Wrapper component that switches between summary and full form views based on current step.
-
-#### ProductPricingForm
-
-Complete form for product selection, filtering, and price adjustment configuration.
-
-#### PriceAdjustmentControls
-
-Controls for configuring price adjustments (mode, increment, value, based on).
-
-#### PricingTable
-
-Table displaying calculated prices for selected products with adjustment details.
-
-## 📖 Usage Guide
-
-### Creating a Pricing Profile
-
-1. **Enter Profile Name**: Fill in the profile name in the "Basic Pricing Profile" section
-2. **Select Profile Type**: Choose between "One Product", "Multiple Products", or "All Products"
-3. **Search & Filter Products**: Use search bar and filters to find desired products
-4. **Select Products**: Check products to include in the pricing profile
-5. **Configure Price Adjustments**:
-   - Select "Based on" price (Global Wholesale Price or another profile)
-   - Choose adjustment mode (Fixed $ or Dynamic %)
-   - Select increment mode (Increase or Decrease)
-   - Enter adjustment value
-6. **Review Pricing Table**: Verify calculated prices in the pricing table
-7. **Save or Proceed**:
-   - Click "Save as Draft" to save without publishing
-   - Click "Next" to proceed to customer assignment
-8. **Assign Customers** (Step 2): Configure customer assignments
-9. **Publish**: Click "Save & Publish Profile" to finalize
-
-### Price Calculation
-
-Prices are calculated using the following formula:
-
-- **Fixed Mode**: `New Price = Base Price ± Adjustment Value`
-- **Dynamic Mode**: `New Price = Base Price ± (Base Price × Adjustment Value / 100)`
-
-## 🎨 Styling
-
-The project uses **Tailwind CSS** for styling. Key customizations:
-
-- Primary color: Defined in `tailwind.config.js`
-- Responsive breakpoints: Standard Tailwind breakpoints
-- Custom utilities: Scrollbar styling in `index.css`
-
-### Customizing Colors
-
-Edit `tailwind.config.js` to customize the primary color:
-
-```javascript
-theme: {
-  extend: {
-    colors: {
-      primary: '#your-color-here',
-    },
-  },
-}
-```
-
-## 🔍 Development Guidelines
-
-### Code Style
-
-- Use TypeScript for type safety
-- Follow React functional component patterns with hooks
-- Use custom hooks for reusable logic
-- Keep components small and focused (Single Responsibility Principle)
-
-### Best Practices
-
-- ✅ Use React Query for all API calls
-- ✅ Use Context API for global state
-- ✅ Implement proper error handling
-- ✅ Add loading states for async operations
-- ✅ Use debouncing for search inputs
-- ✅ Memoize expensive calculations with `useMemo`
-- ✅ Use `useCallback` for event handlers passed to children
-
-### Adding New Features
-
-1. **New Component**: Create in appropriate directory under `src/components/`
-2. **New Hook**: Add to `src/hooks/` directory
-3. **New Type**: Define in `src/types/` directory
-4. **New Utility**: Add to `src/utils/` directory
-
-## 🐛 Troubleshooting
-
-### API Connection Issues
-
-- Ensure backend server is running on `http://localhost:3000`
-- Check CORS configuration on backend
-- Verify API endpoint URLs in hook files
-
-### Build Errors
-
-- Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
-- Check TypeScript errors: `npm run lint`
-- Verify all imports are correct
-
-### Styling Issues
-
-- Ensure Tailwind CSS is properly configured
-- Check `tailwind.config.js` content paths
-- Verify PostCSS configuration
-
-## 📝 Environment Variables
-
-Currently, the API URL is hardcoded. To use environment variables:
-
-1. Create `.env` file:
-
-   ```
-   VITE_API_BASE_URL=http://localhost:3000/api/v1
-   ```
-
-2. Update hooks to use:
-   ```typescript
-   const API_BASE_URL =
-     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
-   ```
-
-## 🤝 Contributing
-
-1. Follow the existing code structure and patterns
-2. Use TypeScript for new code
-3. Add proper error handling
-4. Write reusable components
-5. Update this README if adding new features
-
-## 📄 License
-
-[Add your license information here]
-
-## 👥 Authors
-
-[Add author information here]
-
-## 🔗 Related Projects
-
-- Backend API: [foboh-pricing-backend](../foboh-pricing-backend)
+### Available Scripts
+
+| Command           | Description                        |
+| ----------------- | ---------------------------------- |
+| `npm run dev`     | Start development server with HMR  |
+| `npm run build`   | Create optimized production build  |
+| `npm run preview` | Preview production build locally   |
+| `npm run lint`    | Run ESLint for code quality checks |
 
 ---
-
-**Note**: This application requires the backend API to be running. See the backend README for setup instructions.

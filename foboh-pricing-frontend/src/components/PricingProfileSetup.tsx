@@ -210,7 +210,7 @@ export function PricingProfileSetup() {
   };
 
   return (
-    <div className="p-8 max-w-[1400px] mx-auto">
+    <div className="p-0 md:p-8 max-w-[1400px] mx-auto">
       <div className="flex justify-between items-start mb-8 gap-8 flex-wrap">
         <div>
           <h2 className="text-2xl font-semibold text-gray-800 m-0 mb-2">
