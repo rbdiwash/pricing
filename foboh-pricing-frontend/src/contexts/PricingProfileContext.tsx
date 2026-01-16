@@ -12,7 +12,8 @@ export type AdjustmentIncrementMode = "increase" | "decrease";
 export type BasedOnPriceType =
   | "globalWholesalePrice"
   | "retailPrice"
-  | "costPrice";
+  | "costPrice"
+  | string; // Also accepts profile IDs (string)
 
 interface PricingProfileState {
   profileType: PricingProfileType;
@@ -22,6 +23,7 @@ interface PricingProfileState {
     category?: string;
     brand?: string;
     segment?: string;
+    subCategory?: string;
   };
   priceAdjustment: {
     basedOn: BasedOnPriceType;
@@ -33,6 +35,7 @@ interface PricingProfileState {
 
 interface PricingProfileContextType {
   state: PricingProfileState;
+  setState: React.Dispatch<React.SetStateAction<PricingProfileState>>;
   setProfileType: (type: PricingProfileType) => void;
   toggleProduct: (productId: string) => void;
   setSearchQuery: (query: string) => void;

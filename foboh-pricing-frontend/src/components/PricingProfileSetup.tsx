@@ -1,5 +1,8 @@
 import { useMemo, useState, useEffect } from "react";
-import { usePricingProfile } from "../contexts/PricingProfileContext";
+import {
+  usePricingProfile,
+  type BasedOnPriceType,
+} from "../contexts/PricingProfileContext";
 import { useProducts } from "../hooks/useProducts";
 import type { Product } from "../types/product";
 import { calculatePrice } from "../utils/priceCalculation";
@@ -103,6 +106,10 @@ export function PricingProfileSetup() {
         [key]: value || undefined,
       },
     }));
+  };
+
+  const handleBasedOnChange = (value: string) => {
+    setBasedOn(value as BasedOnPriceType);
   };
 
   const isAllSelected =
@@ -267,7 +274,7 @@ export function PricingProfileSetup() {
             isAllSelected={isAllSelected}
             isNoneSelected={isNoneSelected}
             onSelectAll={handleSelectAll}
-            onBasedOnChange={setBasedOn}
+            onBasedOnChange={handleBasedOnChange}
             onModeChange={setAdjustmentMode}
             onIncrementModeChange={setIncrementMode}
             onAdjustmentValueChange={setAdjustmentValue}
@@ -299,7 +306,7 @@ export function PricingProfileSetup() {
             isAllSelected={isAllSelected}
             isNoneSelected={isNoneSelected}
             onSelectAll={handleSelectAll}
-            onBasedOnChange={setBasedOn}
+            onBasedOnChange={handleBasedOnChange}
             onModeChange={setAdjustmentMode}
             onIncrementModeChange={setIncrementMode}
             onAdjustmentValueChange={setAdjustmentValue}

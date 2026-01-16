@@ -14,6 +14,7 @@ export interface ProductFilters {
   category?: string;
   brand?: string;
   segment?: string;
+  subCategory?: string;
 }
 
-export type PricingProfileType = 'one' | 'multiple' | 'all';
+export type PricingProfileType = "one" | "multiple" | "all";
