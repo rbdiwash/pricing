@@ -7,7 +7,7 @@ info:
     This API provides endpoints for retrieving products and managing pricing profiles
     with various filtering and configuration options.
 servers:
-  - url: http://localhost:3000/api/v1
+  - url: https://pricing-0bfi.onrender.com/api/v1
     description: Local development server (Version 1)
 paths:
   /products:
