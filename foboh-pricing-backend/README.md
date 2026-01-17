@@ -284,53 +284,12 @@ Calculate the adjusted price for a single product based on a pricing profile.
 Interactive API documentation is available at:
 
 ```
-http://localhost:3000/api-docs
+ https://pricing-0bfi.onrender.com/api-docs or in localhost at http://localhost:3000/api-docs
 ```
 
-The documentation is built using Swagger/OpenAPI 3.0 and provides:
-
-- Complete endpoint descriptions
-- Request/response schemas
-- Example requests and responses
-- Try-it-out functionality
+The documentation is built using Swagger/OpenAPI 3.0
 
 ## Data Models
-
-### Product
-
-```typescript
-{
-  id: string;
-  title: string;
-  skuCode: string;
-  brand: string;
-  category: string;
-  subCategory: string;
-  segment: string;
-  globalWholesalePrice: number;
-}
-```
-
-### Pricing Profile
-
-```typescript
-{
-  id: string;
-  name: string;
-  type?: "global";
-  profileType?: "one" | "multiple" | "all";
-  selectedProducts?: string[];
-  priceAdjustment?: {
-    basedOn: string; // "global" or pricing profile ID
-    mode: "fixed" | "dynamic";
-    incrementMode: "increase" | "decrease";
-    adjustmentValue: number;
-  };
-  status?: "draft" | "published";
-  createdAt: string;
-  updatedAt?: string;
-}
-```
 
 ### Price Adjustment
 
@@ -350,8 +309,7 @@ The backend implements sophisticated pricing calculation logic:
 1. **Base Price Resolution**:
 
    - If `basedOn` is "globalWholesalePrice" or "global", uses the product's `globalWholesalePrice`
-   - If `basedOn` is a pricing profile ID, recursively calculates the price using that profile first
-   - Prevents circular dependencies (if Profile A is based on Profile B, and Profile B is based on Profile A, it falls back to global wholesale price)
+   - For now as per requirement, `basedOn` is "globalWholesalePrice" only but if needed to adjust the pricing according to profile, it can be done easily but need some more time, also it was not in the requirements.
 
 2. **Adjustment Application**:
 
@@ -379,22 +337,3 @@ Product data is stored in `data/product.js` as a JavaScript module. In productio
 ### CORS Configuration
 
 CORS is enabled for all origins. For production, configure CORS to allow only specific origins:
-
-```javascript
-app.use(
-  cors({
-    origin: "https://your-frontend-domain.com",
-  })
-);
-```
-
-### Error Handling
-
-The API returns standard HTTP status codes:
-
-- `200` - Success
-- `201` - Created
-- `204` - No Content (successful deletion)
-- `400` - Bad Request
-- `404` - Not Found
-- `500` - Internal Server Error
