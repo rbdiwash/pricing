@@ -1,5 +1,4 @@
 import { ProductPricingSummary } from "./ProductPricingSummary";
-import { ProductPricingForm } from "./ProductPricingForm";
 import type { Product, PricingProfileType } from "../../types/product";
 import type { PricingProfile } from "../../hooks/usePricingProfiles";
 import { PriceAdjustmentControls } from "./PriceAdjustmentControls";
