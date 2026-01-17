@@ -17,7 +17,10 @@ interface ProductPricingFormProps {
     segment?: string;
     brand?: string;
   };
-  onFilterChange: (key: "category" | "brand" | "segment" | "subCategory", value: string) => void;
+  onFilterChange: (
+    key: "category" | "brand" | "segment" | "subCategory",
+    value: string
+  ) => void;
   uniqueValues: {
     categories: string[];
     subCategories: string[];
@@ -74,122 +77,5 @@ export function ProductPricingForm({
   calculateNewPrice,
   onRefresh,
 }: ProductPricingFormProps) {
-  return (
-    <>
-      <ProfileTypeSelector
-        profileType={profileType}
-        onProfileTypeChange={onProfileTypeChange}
-      />
-
-      <SearchAndFilters
-        searchInput={searchInput}
-        onSearchChange={onSearchChange}
-        filters={filters}
-        onFilterChange={onFilterChange}
-        uniqueValues={uniqueValues}
-      />
-
-      {/* Products Header */}
-      <div className="bg-gray-50 px-4 py-3 rounded-md mb-4">
-        <div className="flex justify-between items-center flex-wrap gap-4">
-          <p className="text-gray-600 text-sm m-0">
-            Showing {products?.length} Result{products?.length !== 1 ? "s" : ""} for{" "}
-            {searchInput || filters.brand || "Product Name or SKU Code"}
-            {filters.brand && filters.brand}
-          </p>
-          {profileType !== "all" && (
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-800">
-                <input
-                  type="radio"
-                  name="selectAll"
-                  checked={isNoneSelected}
-                  onChange={onSelectAll}
-                  className="w-4 h-4 cursor-pointer accent-primary"
-                />
-                <span>Deselect All</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-800">
-                <input
-                  type="radio"
-                  name="selectAll"
-                  checked={isAllSelected}
-                  onChange={onSelectAll}
-                  className="w-4 h-4 cursor-pointer accent-primary"
-                />
-                <span>Select all</span>
-              </label>
-            </div>
-          )}
-          {profileType === "all" && (
-            <span className="text-xs text-gray-600 italic">
-              All products are automatically selected
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Products Grid */}
-      {isLoading ? (
-        <div className="text-center py-12 text-gray-600 text-sm">
-          Loading products...
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 mb-6">
-          {products?.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              selected={selectedProducts.has(product.id)}
-              onToggle={onToggleProduct}
-              disabled={profileType === "all"}
-            />
-          ))}
-        </div>
-      )}
-
-      {products?.length === 0 && !isLoading && (
-        <div className="text-center py-12 text-gray-600 text-sm">
-          No products found
-        </div>
-      )}
-
-      {/* Selected Summary */}
-      {selectedProducts.size > 0 && (
-        <div className="p-4 bg-green-50 rounded-md text-gray-700 text-sm text-center mb-6">
-          You've selected{" "}
-          <strong className="text-gray-900 font-semibold">
-            {selectedProducts.size} Product{selectedProducts.size !== 1 ? "s" : ""}
-          </strong>
-          , these will be added to{" "}
-          <strong className="text-gray-900 font-semibold">Profile Name</strong>.
-        </div>
-      )}
-
-      {/* Price Adjustment Controls */}
-      {selectedProducts.size > 0 && (
-        <>
-          <PriceAdjustmentControls
-            basedOn={priceAdjustment.basedOn}
-            onBasedOnChange={onBasedOnChange}
-            mode={priceAdjustment.mode}
-            onModeChange={onModeChange}
-            incrementMode={priceAdjustment.incrementMode}
-            onIncrementModeChange={onIncrementModeChange}
-            adjustmentValue={priceAdjustment.adjustmentValue}
-            onAdjustmentValueChange={onAdjustmentValueChange}
-            pricingProfiles={pricingProfiles}
-            isLoadingProfiles={isLoadingProfiles}
-          />
-
-          <PricingTable
-            products={selectedProductsData}
-            priceAdjustment={priceAdjustment}
-            calculateNewPrice={calculateNewPrice}
-            onRefresh={onRefresh}
-          />
-        </>
-      )}
-    </>
-  );
+  return <></>;
 }

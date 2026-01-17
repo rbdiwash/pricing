@@ -245,39 +245,7 @@ export function PricingProfileSetup() {
           onProfileNameChange={setProfileName}
         />
 
-        {currentStep < 2 && (
-          <ProductPricingSection
-            currentStep={currentStep}
-            selectedCount={state.selectedProducts.size}
-            selectedProducts={state.selectedProducts}
-            selectedProductsData={selectedProductsData}
-            priceAdjustment={state.priceAdjustment}
-            onMakeChanges={() => setCurrentStep(1)}
-            profileType={state.profileType}
-            onProfileTypeChange={setProfileType}
-            searchInput={searchInput}
-            onSearchChange={setSearchInput}
-            filters={state.filters}
-            onFilterChange={handleFilterChange}
-            uniqueValues={uniqueValues}
-            products={products}
-            isLoading={isLoading}
-            onToggleProduct={toggleProduct}
-            isAllSelected={isAllSelected}
-            isNoneSelected={isNoneSelected}
-            onSelectAll={handleSelectAll}
-            onBasedOnChange={handleBasedOnChange}
-            onModeChange={setAdjustmentMode}
-            onIncrementModeChange={setIncrementMode}
-            onAdjustmentValueChange={setAdjustmentValue}
-            pricingProfiles={pricingProfiles}
-            isLoadingProfiles={isLoadingProfiles}
-            calculateNewPrice={calculateNewPrice}
-            onRefresh={handleRefresh}
-          />
-        )}
-
-        {currentStep >= 2 && (
+        {(currentStep === 1 || currentStep === 2) && (
           <ProductPricingSection
             currentStep={currentStep}
             selectedCount={state.selectedProducts.size}
