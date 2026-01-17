@@ -3,11 +3,11 @@ interface HeaderProps {
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   });
 
   return (
@@ -54,7 +54,11 @@ export function Header({ onMenuClick }: HeaderProps) {
             </button>
           </div>
           <div className="bg-gray-300 w-10 h-10 rounded-full flex items-center justify-center text-white text-base">
-            <img src="/assets/images/profile.png" alt="Profile" className="w-full h-full object-cover rounded-full" />
+            <img
+              src="/assets/images/profile.png"
+              alt="Profile"
+              className="w-full h-full object-cover rounded-full"
+            />
           </div>
         </div>
       </div>

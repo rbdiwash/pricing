@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { Header } from "./components/Header";
-import { PricingProfileSetup } from "./components/PricingProfileSetup";
 import { PricingProfileProvider } from "./contexts/PricingProfileContext";
 import { ToastContainer } from "react-toastify";
+import { PricingProfile } from "./pages/PricingProfile";
+import { PricingProfileSetup } from "./components/PricingProfileSetup";
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
