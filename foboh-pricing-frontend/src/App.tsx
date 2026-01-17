@@ -3,7 +3,6 @@ import { Sidebar } from "./components/Sidebar";
 import { Header } from "./components/Header";
 import { PricingProfileProvider } from "./contexts/PricingProfileContext";
 import { ToastContainer } from "react-toastify";
-import { PricingProfile } from "./pages/PricingProfile";
 import { PricingProfileSetup } from "./components/PricingProfileSetup";
 
 function App() {
