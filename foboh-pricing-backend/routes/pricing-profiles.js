@@ -1,5 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const {
+  calculateAdjustedPrice,
+  calculatePricesForProducts,
+} = require("../services/pricing.service");
+const products = require("../data/product");
 
 // In-memory storage for pricing profiles
 let pricingProfiles = [
@@ -78,6 +83,59 @@ router.delete("/:id", (req, res) => {
 
   pricingProfiles.splice(profileIndex, 1);
   res.status(204).send();
+});
+
+router.post("/:id/calculate-prices", (req, res) => {
+  const { productIds } = req.body;
+  const profile = pricingProfiles.find((p) => p.id === req.params.id);
+  if (!profile) {
+    return res.status(404).json({ error: "Pricing profile not found" });
+  }
+
+  // Filter products if productIds provided, otherwise use all products
+  let productsToCalculate = products;
+  if (productIds && Array.isArray(productIds) && productIds.length > 0) {
+    productsToCalculate = products.filter((p) => productIds.includes(p.id));
+  }
+
+  const adjustedPrices = calculatePricesForProducts(
+    productsToCalculate,
+    profile,
+    pricingProfiles
+  );
+  res.json({
+    profileId: profile.id,
+    profileName: profile.name,
+    products: adjustedPrices,
+  });
+});
+
+router.post("/:id/calculate-price/:productId", (req, res) => {
+  const { productId } = req.params;
+  const profile = pricingProfiles.find((p) => p.id === req.params.id);
+  if (!profile) {
+    return res.status(404).json({ error: "Pricing profile not found" });
+  }
+
+  const product = products.find((p) => p.id === productId);
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  }
+
+  const adjustedPrice = calculateAdjustedPrice(
+    product,
+    profile,
+    pricingProfiles
+  );
+
+  res.json({
+    productId: product.id,
+    productTitle: product.title,
+    globalWholesalePrice: product.globalWholesalePrice,
+    adjustedPrice: adjustedPrice,
+    profileId: profile.id,
+    profileName: profile.name,
+  });
 });
 
 module.exports = router;

@@ -354,6 +354,8 @@ paths:
                     type: string
                   description: Array of product IDs to calculate prices for. If omitted, calculates for all products.
                   example: ["1", "2", "3"]
+              example:
+                productIds: ["1", "2", "3"]
       responses:
         '200':
           description: Successful calculation

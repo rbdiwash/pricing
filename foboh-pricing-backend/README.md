@@ -230,6 +230,7 @@ POST /api/v1/pricing-profiles/:id/calculate-prices
 Calculate adjusted prices for one or more products based on a pricing profile's configuration. This endpoint applies the pricing profile's adjustment rules to determine the final prices.
 
 **Request Body (optional):**
+
 ```json
 {
   "productIds": ["1", "2", "3"]
@@ -239,6 +240,7 @@ Calculate adjusted prices for one or more products based on a pricing profile's 
 If `productIds` is omitted, prices are calculated for all products.
 
 **Example Response:**
+
 ```json
 {
   "profileId": "2",
@@ -265,6 +267,7 @@ POST /api/v1/pricing-profiles/:id/calculate-price/:productId
 Calculate the adjusted price for a single product based on a pricing profile.
 
 **Example Response:**
+
 ```json
 {
   "productId": "1",
@@ -345,11 +348,13 @@ The documentation is built using Swagger/OpenAPI 3.0 and provides:
 The backend implements sophisticated pricing calculation logic:
 
 1. **Base Price Resolution**:
+
    - If `basedOn` is "globalWholesalePrice" or "global", uses the product's `globalWholesalePrice`
    - If `basedOn` is a pricing profile ID, recursively calculates the price using that profile first
    - Prevents circular dependencies (if Profile A is based on Profile B, and Profile B is based on Profile A, it falls back to global wholesale price)
 
 2. **Adjustment Application**:
+
    - **Fixed Mode**: Adds or subtracts a fixed dollar amount
      - Example: Base price $100, adjustment $10 increase → $110
    - **Dynamic Mode**: Applies a percentage-based adjustment
